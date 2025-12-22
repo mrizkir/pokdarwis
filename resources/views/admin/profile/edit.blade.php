@@ -100,7 +100,7 @@
                value="{{ old('content_video', \Illuminate\Support\Str::startsWith($pokdarwis->content_video ?? '', ['http://','https://','//']) ? $pokdarwis->content_video : '') }}">
         <div class="help">Isi URL YouTube/Vimeo. Jika URL diisi, file upload di bawah diabaikan.</div>
       </div>
-      <div class="mb-4">
+      {{-- <div class="mb-4">
         <label class="form-label">Atau upload file video</label>
         <input type="file" name="content_video_file" class="form-control" accept="video/mp4,video/webm,video/quicktime">
         <div class="help">MP4/WEBM/MOV, maks 50MB.</div>
@@ -117,7 +117,7 @@
             @endif
           </div>
         @endif
-      </div>
+      </div> --}}
 
       <hr>
 
@@ -184,7 +184,7 @@
         </div>
 
         {{-- Media Sosial --}}
-        <div class="card card-rounded">
+        <div class="card card-rounded mb-4">
           <div class="card-body">
             <div class="section-title">Media Sosial</div>
 
@@ -243,6 +243,72 @@
     </div>
   </div>
 </div>
+
+{{-- Lokasi & Peta --}}
+<div class="card card-rounded mb-4">
+  <div class="card-body">
+    <div class="section-title">Lokasi & Peta</div>
+
+    @php
+      // nilai saat ini
+      $addr = old('alamat_maps', $pokdarwis->alamat_maps);
+      $latv = old('lat', $pokdarwis->lat);
+      $lngv = old('lng', $pokdarwis->lng);
+
+      // build src untuk preview (prioritas lat,lng)
+      $mapQuery = ($latv && $lngv) ? ($latv . ',' . $lngv) : ($addr ?: null);
+      $mapSrc   = $mapQuery ? 'https://www.google.com/maps?output=embed&q=' . urlencode($mapQuery) . '&z=15' : null;
+    @endphp
+
+    <div class="mb-3">
+      <label class="form-label">Alamat / Tautan Google Maps</label>
+      <input type="text" name="alamat_maps" id="alamat_maps" class="form-control"
+             placeholder="Masukan Link / URL Lokasi Pada Google Maps"
+             value="{{ $addr }}">
+      <div class="help">
+        
+      </div>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label">Latitude</label>
+        <input type="text" name="lat" id="lat" class="form-control" inputmode="decimal"
+               placeholder="-0.1234567" value="{{ $latv }}">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Longitude</label>
+        <input type="text" name="lng" id="lng" class="form-control" inputmode="decimal"
+               placeholder="104.1234567" value="{{ $lngv }}">
+      </div>
+    </div>
+
+    <div class="d-flex gap-2 mt-3">
+      <button type="button" class="btn btn-outline-secondary btn-sm" id="btnParseLink">
+        Ambil Koordinat dari Link
+      </button>
+      <button type="button" class="btn btn-outline-secondary btn-sm" id="btnUseCoords">
+        Pakai Lat/Lng untuk Preview
+      </button>
+      {{-- <button type="button" class="btn btn-outline-secondary btn-sm" id="btnUseAddress">
+        Pakai Alamat untuk Preview
+      </button> --}}
+    </div>
+
+    <div class="mt-3" id="mapWrap" style="display: {{ $mapSrc ? 'block' : 'none' }};">
+      <div style="position:relative;width:100%;height:260px;overflow:hidden;border-radius:12px;">
+        <iframe id="mapIframe"
+                src="{{ $mapSrc ?? '' }}"
+                style="border:0;width:100%;height:100%;"
+                loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+      </div>
+    </div>
+
+    <div class="help mt-2">
+      Tips: Di Google Maps, klik kanan titik lokasi untuk melihat titik Latitude & Longitude -> <b>Klik Koordinat untuk Salin</b>
+    </div>
+  </div>
+</div>
         
       </div>
     </div>
@@ -290,6 +356,59 @@
     bindPreview('f_cover', 'previewCover');
     bindPreview('f_content_img', 'previewContentImg');
   })();
+
+
+(function(){
+  const $ = s => document.querySelector(s);
+  const alamat = $('#alamat_maps');
+  const lat = $('#lat');
+  const lng = $('#lng');
+  const iframe = $('#mapIframe');
+  const wrap = $('#mapWrap');
+
+  function setPreviewByQuery(q, z=15){
+    if(!iframe) return;
+    if(q && q.trim()){
+      iframe.src = 'https://www.google.com/maps?output=embed&q=' + encodeURIComponent(q) + '&z=' + z;
+      wrap.style.display = 'block';
+    } else {
+      wrap.style.display = 'none';
+    }
+  }
+
+  // Ambil koordinat dari link Google Maps di kolom alamat
+  $('#btnParseLink')?.addEventListener('click', ()=>{
+    const url = (alamat?.value || '').trim();
+    if(!url){ alert('Isi dulu alamat / tautan.'); return; }
+
+    // pola @-6.123,106.123
+    let m = url.match(/@(-?\d+\.\d+),\s*(-?\d+\.\d+)/);
+    if(!m){
+      // pola ?q=-6.12,106.12
+      m = url.match(/[?&]q=(-?\d+\.\d+),\s*(-?\d+\.\d+)/);
+    }
+    if(m){
+      lat.value = m[1];
+      lng.value = m[2];
+      setPreviewByQuery(m[1] + ',' + m[2]);
+    } else {
+      alert('Tidak menemukan koordinat di tautan itu.\nCoba klik kanan di Maps -> Salin lintang & bujur.');
+    }
+  });
+
+  // Pakai lat/lng untuk preview
+  $('#btnUseCoords')?.addEventListener('click', ()=>{
+    if(!lat.value || !lng.value){ alert('Isi lat & lng dulu.'); return; }
+    setPreviewByQuery(lat.value + ',' + lng.value);
+  });
+
+  // Pakai alamat untuk preview
+  $('#btnUseAddress')?.addEventListener('click', ()=>{
+    if(!alamat.value){ alert('Isi alamat dulu.'); return; }
+    setPreviewByQuery(alamat.value);
+  });
+})();
+
 </script>
 
 @endsection

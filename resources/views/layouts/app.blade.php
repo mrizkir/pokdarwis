@@ -49,7 +49,7 @@
                             <i aria-hidden="true" class="icon icon-phone-call2"></i>
                             <div class="header-contact-details">
                                 <span class="contact-label">For Further Inquires :</span>
-                                <h5 class="header-contact-no">+01 (977) 2599 12</h5>
+                                <h5 class="header-contact-no">(+62) 770 692-505</h5>
                             </div>
                         </a>
                     </div>
@@ -63,15 +63,27 @@
                     </div>
 
                     <div class="header-icon text-right">
-                        {{-- <div class="header-search-icon d-inline-block">
-                            <a href="#"><i aria-hidden="true" class="fas fa-search"></i></a>
-                        </div> --}}
-                        <div class="header-search-icon d-inline-block">
-                        <a href="{{ route('pokdarwis.profile') }}">
-                            <i aria-hidden="true" class="fas fa-user"></i>
-                        </a>
-                        </div>
+                <div class="header-icon text-right">
+                @auth
+                @if(auth()->user()->role === 'pokdarwis')
+                    <div class="header-user-icon d-inline-block">
+                    <a href="{{ route('profile.edit') }}">
+                        <i class="fas fa-user" aria-hidden="true"></i>
+                    </a>
                     </div>
+                @endif
+
+                @if(auth()->user()->role === 'admin')
+                    <div class="header-user-icon d-inline-block">
+                    <a href="{{ route('dashboard') }}">
+                        <i class="fas fa-user" aria-hidden="true"></i>
+                    </a>
+                    </div>
+                @endif
+
+                @endauth
+                </div>
+
                 </div>
             </div>
         </div>
@@ -93,13 +105,27 @@
                     </x-navbar>
 
                     <div class="bottom-header-inner d-flex justify-content-between align-items-center">
-                        <div class="header-btn">
-                            <a href="{{ url('/login') }}"class="round-btn" style="all:unset; color:white; cursor:pointer; display:inline-block;">LOG IN</a>
-                        </div>
-                        {{-- <div class="header-btn" >
-                            <a href="{{ url('/register') }}" class="round-btn" style="all:unset; color:white; cursor:pointer; display:inline-block;">REGISTER</a>
-                        </div> --}}
+                    <div class="header-btn">
+                        @guest('web')
+                        <a href="{{ url('/login') }}" class="round-btn" style="all:unset; color:white; cursor:pointer; display:inline-block;">
+                            LOG IN
+                        </a>
+                        @endguest
+
+                        @auth('web')
+                        @if(auth('web')->user()->role === 'wisatawan')
+                        <form method="POST" action="{{ route('logout') }}" style="display:inline;">
+                            @csrf
+                            <button type="submit" class="round-btn" style="all:unset; color:white; cursor:pointer; display:inline-block;">LOGOUT</button>
+                        </form>
+                        @endif
+                    @endauth
                     </div>
+                    {{-- <div class="header-btn">
+                        <a href="{{ url('/register') }}" class="round-btn" style="all:unset; color:white; cursor:pointer; display:inline-block;">REGISTER</a>
+                    </div> --}}
+                </div>
+
 
                 </div>
             </div>
@@ -121,7 +147,7 @@
 
         {{-- Video --}}
         
-            <div class="bg-img-fullcallback" style="background-image: url(assets/images/ytcovers.jpg);">
+            <div class="bg-img-fullcallback" style="background-image: url(assets/images/bintantourism5.jpg);">
                   <div class="overlay"></div>
                   <div class="container">
                      <div class="row">
@@ -204,7 +230,7 @@
                                     <p>Feel free to contact and<br/>reach us !!</p>
                                     <ul>
                                         <li>
-                                            <a href="tel:+01988256203"><i class="icon icon-phone1"></i> +01(988) 256 203</a>
+                                            <a href="tel:+01988256203"><i class="icon icon-phone1"></i> (+62) 770 692-505</a>
                                         </li>
                                         <li>
                                             <a href="https://bintantourism.com/"><i class="fas fa-globe"></i> Bintan Tourism</a>
@@ -332,7 +358,7 @@
                     <div class="textwidget widget-text">
                         <p>Feel free to contact and<br/> reach us !!</p>
                         <ul>
-                            <li><a href="tel:+01988256203"><i class="icon icon-phone1"></i> +01(988) 256 203</a></li>
+                            <li><a href="tel:+01988256203"><i class="icon icon-phone1"></i> (+62) 770 692-505</a></li>
                             <li><a href="mailto:info@domain.com"><i class="icon icon-envelope1"></i> info@domain.com</a></li>
                             <li><i class="icon icon-map-marker1"></i> 3146 Koontz, California</li>
                         </ul>

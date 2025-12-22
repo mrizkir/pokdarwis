@@ -113,3 +113,59 @@
 </article>
 
 
+{{-- ... markup komponenmu di atas tetap ... --}}
+
+@once
+  @push('scripts')
+    <script>
+      (function(){
+        // simple debounce per element
+        function lock(el){
+          if (el.__busy) return true;
+          el.__busy = true;
+          setTimeout(()=> el.__busy = false, 1200);
+          return false;
+        }
+
+        function wire(el){
+          const incUrl = el.dataset.incrementUrl;
+          if (!incUrl) return;
+
+          const mode = (el.dataset.mode || 'beacon').toLowerCase();
+          const csrf = el.dataset.csrf;
+
+          el.addEventListener('click', function(e){
+            if (lock(el)) return; // cegah double post cepat
+
+            if (mode === 'ajax') {
+              e.preventDefault();
+              fetch(incUrl, {
+                method: 'POST',
+                headers: {'X-CSRF-TOKEN': csrf, 'Accept': 'application/json'},
+              }).catch(()=>{}).finally(()=>{ window.location.href = el.href; });
+            } else {
+              // mode 'beacon' (non-blocking)
+              try {
+                const data = new FormData();
+                data.append('_token', csrf);
+                navigator.sendBeacon(incUrl, data);
+              } catch(e) {}
+              // biarkan <a> redirect normal
+            }
+          });
+        }
+
+        // wire existing buttons
+        document.querySelectorAll('.js-book-now[data-increment-url]').forEach(wire);
+
+        // jika pakai Turbo/Livewire/HTMX, re-wire setelah render
+        document.addEventListener('turbo:load', () => {
+          document.querySelectorAll('.js-book-now[data-increment-url]').forEach(wire);
+        });
+        document.addEventListener('livewire:navigated', () => {
+          document.querySelectorAll('.js-book-now[data-increment-url]').forEach(wire);
+        });
+      })();
+    </script>
+  @endpush
+@endonce

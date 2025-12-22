@@ -88,10 +88,26 @@ class PaketWisata extends Model
     // helper
     public function fasilitasInclude()
     {
-        return $this->hasMany(PaketFasilitas::class)->where('tipe','include')->orderBy('sort_order');
+        // return $this->hasMany(PaketFasilitas::class)->where('tipe','include')->orderBy('id');
+        return $this->fasilitas()->where('tipe','include')->orderBy('sort_order')->orderBy('id');
     }
     public function fasilitasExclude()
     {
-        return $this->hasMany(PaketFasilitas::class)->where('tipe','exclude')->orderBy('sort_order');
+        // return $this->hasMany(PaketFasilitas::class)->where('tipe','exclude')->orderBy('id');
+        return $this->fasilitas()->where('tipe','exclude')->orderBy('sort_order')->orderBy('id');
     }
+
+    //Map
+    public function getMapAddressAttribute()
+        {
+            return $this->pokdarwis?->alamat_maps;
+        }
+        public function getMapLatAttribute()
+        {
+        return $this->pokdarwis?->lat;
+        }
+        public function getMapLngAttribute()
+        {
+            return $this->pokdarwis?->lng;
+        }
 }

@@ -22,7 +22,7 @@ class Pokdarwis extends Model
         'img',
         'deskripsi2',
         'phone',
-        'email;',
+        'email',
         'facebook',
         'twitter',
         'instagram',
@@ -30,7 +30,13 @@ class Pokdarwis extends Model
         'visit_count_manual',
         'visit_count_auto',
         'cover_img','content_img','content_video',
+        'alamat_maps', 'lat', 'lng'
     ];
+
+    protected $casts = [
+    'lat' => 'float',
+    'lng' => 'float',
+];
 
     /**
      * Relasi balik ke User (One to One)

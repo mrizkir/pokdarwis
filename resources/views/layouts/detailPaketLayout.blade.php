@@ -40,7 +40,7 @@
       @stack('styles')
    </head>
   {{-- Preloader --}}
-  <x-preloader />
+  {{-- <x-preloader /> --}}
 
   <div id="page" class="page">
     {{-- Header , Tombol Booking --}}
@@ -60,7 +60,102 @@
             $bookHref = route('booking.pokdarwis', $ctxPokdarwis);
          }
       @endphp
-   <x-site-header active="tour"  />
+
+      <div class="bottom-header">
+  <header id="masthead" class="site-header">
+        <div class="top-header">
+            <div class="container">
+                <div class="top-header-inner">
+                    <div class="header-contact text-left">
+                        <a href="tel:01977259912">
+                            <i aria-hidden="true" class="icon icon-phone-call2"></i>
+                            <div class="header-contact-details">
+                                <span class="contact-label">For Further Inquires :</span>
+                                <h5 class="header-contact-no">(+62) 770 692-505</h5>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="site-logo text-center">
+                        <h1 class="site-title">
+                            <a href="{{ url('/') }}">
+                                <img src="{{ asset('assets/images/site-logo.png') }}" alt="Logo">
+                            </a>
+                        </h1>
+                    </div>
+
+                    {{-- <div class="header-icon text-right">
+                        <div class="header-search-icon d-inline-block">
+                            <a href="#"><i aria-hidden="true" class="fas fa-search"></i></a>
+                        </div>
+                        <div class="offcanvas-menu d-inline-block">
+                            <a href="#"><i aria-hidden="true" class="icon icon-burger-menu"></i></a>
+                        </div>
+                    </div> --}}
+                </div>
+            </div>
+        </div>
+
+<div class="bottom-header">
+  <div class="container">
+    <div class="bottom-header-inner d-flex justify-content-between align-items-center">
+
+      @php
+        // --- Build WhatsApp URL dari $pokdarwis->kontak ---
+        // Ambil digit saja, handle format 08xxxx / +62xxxx / 62xxxx / 8xxxx
+        $waUrl = null;
+        $raw   = $pokdarwis->kontak ?? null;
+        if ($raw) {
+          $digits = preg_replace('/\D+/', '', $raw);       // keep digits only
+          if (str_starts_with($digits, '0')) {
+            $digits = '62'.substr($digits, 1);
+          } elseif (str_starts_with($digits, '8')) {
+            $digits = '62'.$digits;
+          } // jika sudah 62… atau 628… biarkan
+          if ($digits) $waUrl = 'https://wa.me/'.$digits;
+        }
+      @endphp
+
+      <div class="header-social social-icon">
+        <ul>
+          @if(!empty($pokdarwis?->facebook))
+            <li><a href="{{ $pokdarwis->facebook }}" target="_blank" rel="noopener"><i class="fab fa-facebook-f"></i></a></li>
+          @endif
+
+          @if($waUrl)
+            <li><a href="{{ $waUrl }}" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a></li>
+          @endif
+
+          @if(!empty($pokdarwis?->instagram))
+            <li><a href="{{ $pokdarwis->instagram }}" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a></li>
+          @endif
+        </ul>
+      </div>
+
+      {{-- Navigation Bar --}}
+      <x-navbar active="Tour" :pokdarwis="$pokdarwis ?? null" />
+
+      <div class="bottom-header-inner d-flex justify-content-between align-items-center">
+                    <div class="header-btn">
+                        @guest
+                        <a href="{{ url('/login') }}" class="round-btn" style="all:unset; color:white; cursor:pointer; display:inline-block;">
+                            LOG IN
+                        </a>
+                        @endguest
+                    </div>
+                    {{-- <div class="header-btn">
+                        <a href="{{ url('/register') }}" class="round-btn" style="all:unset; color:white; cursor:pointer; display:inline-block;">REGISTER</a>
+                    </div> --}}
+                </div>
+
+    </div>
+  </div>
+</div>
+
+
+        <div class="mobile-menu-container"></div>
+    </header>
+</div>
     
 
     <main id="content" class="site-main">

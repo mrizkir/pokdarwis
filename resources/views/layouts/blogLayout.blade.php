@@ -57,7 +57,7 @@
                             <i aria-hidden="true" class="icon icon-phone-call2"></i>
                             <div class="header-contact-details">
                                 <span class="contact-label">For Further Inquires :</span>
-                                <h5 class="header-contact-no">+01 (977) 2599 12</h5>
+                                <h5 class="header-contact-no">(+62) 770 692-505</h5>
                             </div>
                         </a>
                     </div>
@@ -99,10 +99,17 @@
                     </x-navbar>
 
                     <div class="bottom-header-inner d-flex justify-content-between align-items-center">
-                        <div class="header-btn">
-                            <a href="{{ url('/login') }}"class="round-btn" style="all:unset; color:white; cursor:pointer; display:inline-block;">LOG IN</a>
-                        </div>
+                    <div class="header-btn">
+                        @guest
+                        <a href="{{ url('/login') }}" class="round-btn" style="all:unset; color:white; cursor:pointer; display:inline-block;">
+                            LOG IN
+                        </a>
+                        @endguest
                     </div>
+                    {{-- <div class="header-btn">
+                        <a href="{{ url('/register') }}" class="round-btn" style="all:unset; color:white; cursor:pointer; display:inline-block;">REGISTER</a>
+                    </div> --}}
+                </div>
 
                 </div>
             </div>
@@ -114,7 +121,7 @@
     <main id="content" class="site-main">
         @yield('banner')
         <div class="inner-banner-wrap">
-               <div class="inner-baner-container" style="background-image: url(assets/images/guruntelagabiru.jpg);">
+               <div class="inner-baner-container" style="background-image: url(assets/images/bintantourism5.jpg);">
                   <div class="container">
                      <div class="inner-banner-content">
                         <h1 class="page-title">Blog Archive</h1>
@@ -247,7 +254,7 @@
                                     <p>Feel free to contact and<br/>reach us !!</p>
                                     <ul>
                                         <li>
-                                            <a href="tel:+01988256203"><i class="icon icon-phone1"></i> +01(988) 256 203</a>
+                                            <a href="tel:+01988256203"><i class="icon icon-phone1"></i> (+62) 770 692-505</a>
                                         </li>
                                         <li>
                                             <a href="https://bintantourism.com/"><i class="fas fa-globe"></i> Bintan Tourism</a>

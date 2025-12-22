@@ -50,10 +50,11 @@ $isTourCurrent = function ($pd) use ($pokdarwis) {
 <div class="navigation-container-admin d-none d-lg-block">
   <nav id="navigation" class="navigation" aria-label="Main">
     <ul>
+      @if(!auth()->check() || auth()->user()->role !== 'admin')
       <li class="{{ $isActive('home') }}"><a href="{{ $hrefHome }}">Home</a></li>
       {{-- <li class="{{ $isActive('about') }}"><a href="{{ $hrefAbout }}">about us</a></li> --}}
       <li class="{{ $isActive('gallery') }}"><a href="{{ $hrefDest }}">Gallery</a></li>
-      
+      @endif
       {{-- TOUR: aktif jika active="tour" ATAU route sekarang pokdarwis.show --}}
       @if (auth()->user()->role === 'wisatawan')
       <li class="menu-item-has-children {{ $isActive('tour') ?: $activeTourByRoute }}">
@@ -68,9 +69,9 @@ $isTourCurrent = function ($pd) use ($pokdarwis) {
           @endforelse
         </ul>
       </li>
-<<<<<<< HEAD
       @endif
 
+      @if (auth()->user()->role === 'pokdarwis')
       <li class="menu-item-has-children">
         <a href="">Upload</a>
         <ul>
@@ -85,7 +86,9 @@ $isTourCurrent = function ($pd) use ($pokdarwis) {
           </li>
         </ul>
       </li>
+      @endif
 
+      @if(!auth()->check() || auth()->user()->role !== 'admin')
       <li class="menu-item-has-children">
       <a href="">Blog</a>
         <ul>
@@ -94,9 +97,8 @@ $isTourCurrent = function ($pd) use ($pokdarwis) {
           </li>
         </ul>
       </li>
+      @endif
       
-=======
->>>>>>> bb4134d6635eaa325ebdde47833152df4ea0610a
       @if (auth()->user()->role === 'admin')
       <li class="menu-item-has-children {{ $isActive('pages') }}">
         <a href="#">Settings</a>
@@ -106,7 +108,7 @@ $isTourCurrent = function ($pd) use ($pokdarwis) {
             <ul>
               <li><a href="{!! route('settings-users-superadmin.index') !!}">Superadmin</a></li>
               <li><a href="{!! route('settings-users-pokdarwis.index') !!}">Pokdarwis</a></li>
-              <li><a href="{!! route('settings-users-wisatawan.index') !!}">Wisatawan</a></li>
+              {{-- <li><a href="{!! route('settings-users-wisatawan.index') !!}">Wisatawan</a></li> --}}
             </ul>
           </li>                    
         </ul>

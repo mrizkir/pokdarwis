@@ -69,6 +69,12 @@ Route::get('/storage/{path}', function (string $path) {
     return response()->file(Storage::disk('public')->path($path));
 })->where('path', '.*');
 
+
+// routes/web.php
+Route::middleware(['auth']) // ganti sesuai nama role-mu
+    ->post('/pokdarwis/{pokdarwis:slug}/reviews', [ReviewController::class, 'store'])
+    ->name('pokdarwis.reviews.store');
+
 require __DIR__.'/auth.php';
 
 

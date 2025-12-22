@@ -13,67 +13,69 @@
     //   'primaryText'=>'EXPLORE'
     ],
       
-      ['image'=>'assets/images/img7.jpg',
-      'title'=>'BAJAKAH',
-      'text'=>'',
-      'primaryHref'=>route('pokdarwis'),
-      // 'primaryText'=>'EXPLORE'
-      ],
+    //   ['image'=>'assets/images/img7.jpg',
+    //   'title'=>'BAJAKAH',
+    //   'text'=>'',
+    //   'primaryHref'=>route('pokdarwis'),
+    //   // 'primaryText'=>'EXPLORE'
+    //   ],
 
-      ['image'=>'assets/images/img7.jpg',
-      'title'=>'GUDEM BEE FARM',
-      'text'=>'',
-      'primaryHref'=>route('pokdarwis'),
-      // 'primaryText'=>'EXPLORE'
-      ],
+    //   ['image'=>'assets/images/img7.jpg',
+    //   'title'=>'GUDEM BEE FARM',
+    //   'text'=>'',
+    //   'primaryHref'=>route('pokdarwis'),
+    //   // 'primaryText'=>'EXPLORE'
+    //   ],
 
-      ['image'=>'assets/images/guruntelagabiru.jpg',
-      'title'=>'GURUN TELAGA BIRU',
-      'text'=>'',
-      'primaryHref'=>route('pokdarwis'),
-      // 'primaryText'=>'EXPLORE'
-      ],
+    //   ['image'=>'assets/images/guruntelagabiru.jpg',
+    //   'title'=>'GURUN TELAGA BIRU',
+    //   'text'=>'',
+    //   'primaryHref'=>route('pokdarwis'),
+    //   // 'primaryText'=>'EXPLORE'
+    //   ],
 
-      ['image'=>'assets/images/img7.jpg',
-      'title'=>'LESUNG EMAS',
-      'text'=>'',
-      'primaryHref'=>route('pokdarwis'),
-      // 'primaryText'=>'EXPLORE'
-      ],
+    //   ['image'=>'assets/images/img7.jpg',
+    //   'title'=>'LESUNG EMAS',
+    //   'text'=>'',
+    //   'primaryHref'=>route('pokdarwis'),
+    //   // 'primaryText'=>'EXPLORE'
+    //   ],
 
-      ['image'=>'assets/images/img7.jpg',
-      'title'=>'MANGGAR ABADI',
-      'text'=>'',
-      'primaryHref'=>route('pokdarwis'),
-      // 'primaryText'=>'EXPLORE'
-      ],
+    //   ['image'=>'assets/images/img7.jpg',
+    //   'title'=>'MANGGAR ABADI',
+    //   'text'=>'',
+    //   'primaryHref'=>route('pokdarwis'),
+    //   // 'primaryText'=>'EXPLORE'
+    //   ],
 
-      ['image'=>'assets/images/img7.jpg',
-      'title'=>'PEMANCINGAN WONG DHESO',
-      'text'=>'',
-      'primaryHref'=>route('pokdarwis'),
-      // 'primaryText'=>'EXPLORE'
-      ],
+    //   ['image'=>'assets/images/img7.jpg',
+    //   'title'=>'PEMANCINGAN WONG DHESO',
+    //   'text'=>'',
+    //   'primaryHref'=>route('pokdarwis'),
+    //   // 'primaryText'=>'EXPLORE'
+    //   ],
 
-      ['image'=>'assets/images/img7.jpg',
-      'title'=>'SUMAT',
-      'text'=>'',
-      'primaryHref'=>route('pokdarwis'),
-      // 'primaryText'=>'EXPLORE'
-      ],
+    //   ['image'=>'assets/images/img7.jpg',
+    //   'title'=>'SUMAT',
+    //   'text'=>'',
+    //   'primaryHref'=>route('pokdarwis'),
+    //   // 'primaryText'=>'EXPLORE'
+    //   ],
       
-      ['image'=>'assets/images/img7.jpg',
-      'title'=>'TEKAD TANI',
-      'text'=>'',
-      'primaryHref'=>route('pokdarwis'),
-      // 'primaryText'=>'EXPLORE'
-      ],
+    //   ['image'=>'assets/images/img7.jpg',
+    //   'title'=>'TEKAD TANI',
+    //   'text'=>'',
+    //   'primaryHref'=>route('pokdarwis'),
+    //   // 'primaryText'=>'EXPLORE'
+    //   ],
   ]" class="mb-5"/>
   
 
 @endsection
 
 @section('main')
+
+
                   <x-product-card2
                     subtitle="UNCOVER PLACE"
                     title="POPULAR PRODUCT"

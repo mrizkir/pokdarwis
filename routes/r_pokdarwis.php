@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\Upload\ProductsController;
 use App\Http\Controllers\Admin\Upload\PaketWisataController;
 use App\Http\Controllers\Admin\Upload\MediaKontenController;
 use App\Http\Controllers\Admin\Upload\PostsController;
+use App\Http\Controllers\PaketFasilitasController;
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
@@ -21,7 +22,7 @@ Route::middleware(['auth','role:admin'])->group(function () {
 });
 
 //Upload Product
-Route::middleware(['auth','role:pokdarwis'])->group(function () {
+Route::middleware(['auth'])->group(function () {
 Route::get('/upload/product', [ProductsController::class, 'create'])->name('admin.upload.product.uploadProduct');
 Route::post('/upload/product', [ProductsController::class, 'store'])->name('pokdarwis.product.store');
 Route::get('/upload/product/list', [ProductsController::class, 'index'])->name('pokdarwis.product.index');
@@ -42,20 +43,20 @@ Route::get('/home', function () {return redirect()->route('pokdarwis.product.ind
 
 Route::post('/pokdarwis/upload/paket', function(Request $r){dd('HIT ROUTE', $r->all());})->name('pokdarwis.paket.store');});
 
-Route::middleware(['auth','role:pokdarwis'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/pokdarwis/upload/paket',  [PaketWisataController::class, 'create'])->name('pokdarwis.paket.create');
     Route::post('/pokdarwis/upload/paket', [PaketWisataController::class, 'store'])->name('pokdarwis.paket.store');
 });
 
 //Upload Packages
-Route::middleware(['auth','role:pokdarwis'])->group(function () {
+Route::middleware(['auth'])->group(function () {
 Route::get('/upload/paket',  [PackagesController::class, 'create'])->name('admin.upload.paket.uploadPaket');
 Route::post('/upload/paket', [PackagesController::class, 'store'])->name('pokdarwis.paket.store');
 });
 
 
 //Media Konten
-Route::middleware(['auth','role:pokdarwis'])->prefix('pokdarwis')->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/upload/konten/list',   [MediaKontenController::class, 'index'])->name('pokdarwis.konten.index');
     Route::post('/upload/konten',       [MediaKontenController::class, 'store'])->name('pokdarwis.konten.store');
     Route::put('/upload/konten/{id}',   [MediaKontenController::class, 'update'])->name('pokdarwis.konten.update');
@@ -89,3 +90,10 @@ Route::post('/ai/generate', [AiGenerateController::class, 'generate'])
      Route::prefix('pokdarwis')->group(function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('pokdarwis.profile');
 });
+
+//Fasilitas
+Route::get('/paket/{paket}/fasilitas/edit', [PaketFasilitasController::class, 'edit'])
+    ->name('paket.fasilitas.edit');
+
+Route::post('/paket/{paket}/fasilitas', [PaketFasilitasController::class, 'storeOrUpdate'])
+    ->name('paket.fasilitas.save');

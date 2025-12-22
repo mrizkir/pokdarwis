@@ -165,12 +165,14 @@ class UsersAdminController extends Controller
                 ->log("User {$user->name} berhasil dihapus");
 
             \Alert::success("Data user dengan role $default_role berhasil dihapus.")->autoClose(3000)->timerProgressBar();
-            return redirect(route('system-users-manage.index'))->with('swal', true);
+            // return redirect(route('system-users-manage.index'))->with('swal', true);
+            return back()->with('swal', true);
         }
         catch(\Exception $e)
         {
             \Alert::error($e->getMessage())->persistent();
-            return redirect(route('system-users-manage.index'))->with('swal', false);
+            // return redirect(route('system-users-manage.index'))->with('swal', false);
+            return back()->with('swal', true);
         }
     }
     /**
@@ -320,12 +322,14 @@ class UsersAdminController extends Controller
         $user->syncRoles([$user->default_role]);
 
         \Alert::success("Role user  ($user->name) berhasil direset menjadi role default.")->autoClose(3000)->timerProgressBar();
-        return redirect(route('system-users-manage.index'))->with('swal', true);
+        // return redirect(route('system-users-manage.index'))->with('swal', true);
+        return back()->with('swal', true);
     }
 
     public function resetpermission(Request $request)
     {
         \Alert::success('Berhasil', 'Seluruh permission user masing-masing role akan direset sesuai dengan role yang dimilikinya, berhasil ditambah ke queue.')->autoClose(3000)->timerProgressBar();
-        return redirect(route('system-users-manage.index'))->with('swal', true);
+        // return redirect(route('system-users-manage.index'))->with('swal', true);
+        return back()->with('swal', true);
     }
 }

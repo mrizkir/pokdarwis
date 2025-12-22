@@ -22,6 +22,9 @@
 
 	var url_current_page = $('body').attr('url-current-page');
 	var datatable = $('#daftar-user-admin');
+	const destroyTpl = datatable.data('destroy-template');
+	const indexUrl   = datatable.data('index-url') || $('body').attr('url-current-page');
+
 
 	if (datatable.length) {
 		datatable.DataTable({			
@@ -55,10 +58,17 @@
 					searchable: false,
 					sortable: false,
 					render: function (data, type, full, meta) {
+						// <a href="${url_current_page}/${full.id}" class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a>
 						return `
-							<a href="${url_current_page}/${full.id}" class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a>
 							<a href="${url_current_page}/${full.id}/edit" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
-							<a href="${url_current_page}/${full.id}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+							<button type="button"
+									class="btn btn-sm btn-danger btnhapus"
+									data-id="${full.id}"
+									data-name="${full.name}"
+									data-bs-toggle="modal"
+									data-bs-target="#modalHapusUser">
+								<i class="fas fa-trash"></i>
+							</button>
 						`;
 					}
 				}
@@ -81,12 +91,19 @@
 			}
 		});
 
-		$('#daftar-user-admin').on('click', '#btnhapus', function () {
-			var tr = $(this).closest('tr');
-			var data = datatable.DataTable().row(tr).data();
-			$('#nama-user').text(data.name);
-			$('#frmhapus').attr('action', url_current_page + '/' + data.id);
-		});
+		$('#daftar-user-admin').off('click', '#btnhapus');
+
+
+		$('#daftar-user-admin').on('click', '.btnhapus', function () {
+  const id   = this.getAttribute('data-id');
+  const name = this.getAttribute('data-name') || 'user ini';
+
+  // untuk debugging:
+  // console.log('tpl=', destroyTpl, 'id=', id, 'action=', destroyTpl?.replace('ID_PLACEHOLDER', id));
+
+  $('#nama-user').text(name);
+  $('#formHapusUser').attr('action', destroyTpl.replace('ID_PLACEHOLDER', id));
+});
 	}
 	
 	document.addEventListener('DOMContentLoaded', function (e) {

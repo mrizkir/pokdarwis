@@ -26,7 +26,9 @@
             <strong class="me-2">User admin</strong>
         </div>
         <div class="card-body">
-        <table class="table table-sm" id="daftar-user-admin">
+        <table class="table table-sm" id="daftar-user-admin" 
+        data-destroy-template="{{ route('settings-users-pokdarwis.destroy', ['id' => 'ID_PLACEHOLDER']) }}"
+        >
             <thead>
                 <tr>
                     <th>No</th>
@@ -40,7 +42,32 @@
         </div>
     </div>
   </div>
+
+  
+{{-- Modal hapus (sekali saja) --}}
+<div class="modal fade" id="modalHapusUser" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Hapus User !</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">Anda Yakin Ingin Menghapus <strong id="nama-user"> </strong> ?</div>
+      <div class="modal-footer">
+        <form id="formHapusUser" method="POST" action="#">
+          @csrf
+          @method('DELETE')
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-danger">Hapus</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 @endsection
+
+
 
 @section('page-breadcrumb')
 <nav class="admin-breadcrumb" aria-label="breadcrumb">

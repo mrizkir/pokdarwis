@@ -3,7 +3,7 @@
   // 'bookHref' => '#',
   // 'bookText' => 'Book Now',
   'logo'     => asset('assets/images/site-logo.png'),
-  'phone'    => '+01 (977) 2599 12',
+  'phone'    => '(+62) 770 692-505',
 ])
 
 <header id="masthead" class="site-header">
@@ -25,15 +25,6 @@
             <a href="{{ url('/') }}"><img src="{{ $logo }}" alt="Logo"></a>
           </p>
         </div>
-
-        <div class="header-icon text-right">
-          <div class="header-search-icon d-inline-block">
-            <a href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
-          </div>
-          <div class="offcanvas-menu d-inline-block">
-            <a href="#"><i class="icon icon-burger-menu" aria-hidden="true"></i></a>
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -53,10 +44,17 @@
         <x-navbar :pokdarwis="$pokdarwis ?? null" :active="$active" />
         {{-- <x-navbar :pokdarwis="$pokdarwis ?? null" active="packages" /> --}}
         <div class="bottom-header-inner d-flex justify-content-between align-items-center">
-                        <div class="header-btn">
-                            <a href="{{ url('/login') }}"class="round-btn" style="all:unset; color:white; cursor:pointer; display:inline-block;">LOG IN</a>
-                        </div>
+                    <div class="header-btn">
+                        @guest
+                        <a href="{{ url('/login') }}" class="round-btn" style="all:unset; color:white; cursor:pointer; display:inline-block;">
+                            LOG IN
+                        </a>
+                        @endguest
                     </div>
+                    {{-- <div class="header-btn">
+                        <a href="{{ url('/register') }}" class="round-btn" style="all:unset; color:white; cursor:pointer; display:inline-block;">REGISTER</a>
+                    </div> --}}
+                </div>
         {{-- <div class="header-btn">
           <a href="{{ $bookHref }}" class="round-btn">{{ $bookText }}</a>
         </div> --}}

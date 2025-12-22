@@ -40,6 +40,8 @@
 
     <title>@yield('page-title')</title>
     @stack('styles')
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
 </head>
 <body url-current-page="{!! Helper::getCurrentPageURL() !!}" base-url="{!! url('/') !!}">
 
@@ -54,7 +56,7 @@
                                 <i aria-hidden="true" class="icon icon-phone-call2"></i>
                                 <div class="header-contact-admin-details">
                                     <span class="contact-label">For Further Inquires :</span>
-                                    <h5 class="header-contact-admin-no">+01 (977) 2599 12</h5>
+                                    <h5 class="header-contact-admin-no">(+62) 770 692-505</h5>
                                 </div>
                             </a>
                         </div>
@@ -67,14 +69,26 @@
                             </h1>
                         </div>
     
+                        @if (auth()->user()->role === 'pokdarwis')
                         <div class="header-icon text-right">
-                            <div class="header-search-icon d-inline-block">
-                                <a href="#"><i aria-hidden="true" class="fas fa-search"></i></a>
-                            </div>
+                            {{-- <div class="header-search-icon d-inline-block">
+                            <a href="#"><i aria-hidden="true" class="fas fa-search"></i></a>
+                            </div> --}}
+                            <button type="button" 
+                                    class="btn btn-link text-secondary ms-2 p-0" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#videoGuideModal" 
+                                    title="Lihat panduan upload">
+                            <i class="fa-regular fa-circle-question fa-lg"></i>
+                            </button>
                             <div class="offcanvas-menu d-inline-block">
-                                <a href="#"><i aria-hidden="true" class="icon icon-burger-menu" style="color: gray"></i></a>
+                            <a href="#">
+                                <i aria-hidden="true" class="icon icon-burger-menu" style="color: grey"></i>
+                            </a>
                             </div>
                         </div>
+                        @endif
+
                     </div>
                 </div>
             </div>
@@ -103,6 +117,40 @@
             <div class="mobile-menu-container"></div>
         </header>
     </div>
+
+    {{-- Video Guide --}}
+<div class="modal fade" id="videoGuideModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+
+      <div class="modal-header bg-light border-bottom">
+        <h5 class="modal-title d-flex align-items-center text-primary mb-0">
+          <i class="fa-regular fa-circle-question me-2"></i>
+          Panduan Upload Paket
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body bg-dark p-0 position-relative">
+        <video id="guideVideo" 
+               controls 
+               preload="metadata" 
+               class="w-100" 
+               style="border-radius:0 0 .5rem .5rem; max-height:70vh; object-fit:cover;">
+          <source src="{{ asset('assets/video/panduan-edit-profile.mp4') }}" type="video/mp4">
+          Browser kamu tidak mendukung pemutaran video.
+        </video>
+      </div>
+
+      <div class="modal-footer bg-light text-muted small justify-content-center">
+        <i class="fa-solid fa-info-circle me-1"></i>
+        Klik tombol <strong><i class="fa-regular fa-circle-question fa-lg"></i></strong> kapan pun untuk melihat panduan.
+      </div>
+
+    </div>
+  </div>
+</div>
+
 
     {{-- MAIN (isi dari child) --}}
     <main id="content" class="container site-main">
@@ -325,6 +373,17 @@
     </div> --}}
 
     {{-- JS Scripts --}}
+    <script>
+  const modal = document.getElementById('videoGuideModal');
+  const video = document.getElementById('guideVideo');
+
+  modal?.addEventListener('hidden.bs.modal', () => {
+    if (video) {
+      video.pause();
+      video.currentTime = 0;
+    }
+  });
+</script>
     <script src="{{ asset('assets/vendors/jquery/jquery.js') }}" defer></script>
     <script src="{{ asset('assets/vendors/waypoint/waypoints.js') }}" defer></script>
     <script src="{{ asset('assets/vendors/bootstrap/js/bootstrap.bundle.min.js') }}" defer></script>

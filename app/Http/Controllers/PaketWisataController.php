@@ -139,7 +139,7 @@ class PaketWisataController extends Controller
         ->take(5)
         ->get();
 
-        return view('detailPaket', compact('paket', 'others'));
+        return view('detailpaket', compact('paket', 'others'));
     }
 
     /**

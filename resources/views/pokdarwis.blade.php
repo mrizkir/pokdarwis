@@ -36,7 +36,7 @@
               {{-- <h3>{{ $pokdarwis->name_pokdarwis }}</h3> --}}
             </div>
           </figure>
-            <h2>{{ $pokdarwis->name_pokdarwis }}</h2>
+            <h2 class="title-outline">{{ $pokdarwis->name_pokdarwis }}</h2>
             <p>{{ $pokdarwis->deskripsi2 }}</p>
             </div>
         </div>
@@ -251,11 +251,60 @@
       </div>
       
 
+      @auth
+  @if(auth()->user()->role === 'wisatawan') {{-- sesuaikan: nama role kamu --}}
+    <section class="my-5">
+      <div class="container">
+        @if(session('success'))
+          <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+        @if(session('error'))
+          <div class="alert alert-danger">{{ session('error') }}</div>
+        @endif
+
+        <div class="card p-4">
+          <h4 class="mb-3">Tulis Review</h4>
+          <form action="{{ route('pokdarwis.reviews.store', $pokdarwis) }}" method="POST">
+            @csrf
+
+            <div class="mb-3">
+              <label class="form-label">Rating <span class="text-danger">*</span></label>
+              <select name="rating" class="form-select" style="max-width:140px" required>
+                <option value="">Pilih…</option>
+                @for($i=5;$i>=1;$i--)
+                  <option value="{{ $i }}">{{ $i }} ★</option>
+                @endfor
+              </select>
+              @error('rating') <div class="text-danger small">{{ $message }}</div> @enderror
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Ulasan</label>
+              <textarea name="text" rows="4" class="form-control" placeholder="Ceritakan pengalamanmu… (opsional)"></textarea>
+              @error('text') <div class="text-danger small">{{ $message }}</div> @enderror
+            </div>
+
+            <button type="submit" class="btn btn-primary">Kirim</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  @endif
+@else
+  <section class="my-5">
+    <div class="container">
+      <div class="alert alert-info">
+        Silakan <a href="{{ url('/login') }}">login</a> sebagai <strong>wisatawan</strong> untuk menulis review.
+      </div>
+    </div>
+  </section>
+@endauth
+
 
         <x-review-card :reviews="$reviews"
           {{-- subtitle="CLIENT'S REVIEWS" --}}
           title="TRAVELLER'S TESTIMONIAL"
-          intro="Apa kata para wisatawan tentang {{ $pokdarwis->name_pokdarwis }}"
+          intro="What Tourists Say About {{ $pokdarwis->name_pokdarwis }}"
         />
         
     </div>

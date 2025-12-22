@@ -95,50 +95,87 @@
 
           {{-- Related Images (fallback: pakai gambar cover berulang jika belum ada data galeri) --}}
           <div class="related-package">
-          <h3>BOOK HERE</h3>
-          <p>Please Contact Us!</p>
+              <h3>BOOK HERE</h3>
+              <p>Please Contact Us!</p>
 
-          @php
-            $pdw = $paket->pokdarwis;
+              @php
+                $pdw = $paket->pokdarwis;
+                $field = 'name_pokdarwis';
+                $pokdarwisName = $pdw?->{$field} ;
 
-            // Build links (auto-format WA number 08xxxx -> 628xxxx)
-            $wa = !empty($pdw?->kontak)
-                ? 'https://wa.me/' . preg_replace('/^0/', '62', $pdw->kontak)
-                : null;
+                // Pesan WA
+                $waMessage =
+                "Halo Admin {$pokdarwisName},\n".
+                "\n".
+                "Saya ingin menanyakan ketersediaan paket berikut:\n".
+                "- Nama Paket : {$paket->nama_paket}\n".
+                // "- Durasi     : ".($paket->waktu_penginapan ?? '-')."\n".
+                // "- Lokasi     : ".($paket->lokasi ?? '-')."\n".
+                "- Perkiraan Tanggal: ...\n".
+                "- Jumlah Orang     : ...\n".
+                "- Catatan Tambahan : \n\n".
+                "Mohon info harga terbaru, jadwal tersedia, dan cara pembayarannya. Terima kasih!\n".
+                "".request()->fullUrl();
 
-            $links = array_filter([
-              'facebook'  => $pdw?->facebook ?? null,
-              'twitter'   => $pdw?->twitter ?? null,
-              'instagram' => $pdw?->instagram ?? null,
-              'website'   => $pdw?->website ?? null,
-              'whatsapp'  => $wa,
-            ]);
-          @endphp
+                // --- Sanitasi nomor: ambil digit, normalisasi ke format 62XXXXXXXXXX ---
+                $rawKontak = preg_replace('/\D+/', '', (string)($pdw->kontak ?? '')); // hanya digit
+                if ($rawKontak) {
+                  if (str_starts_with($rawKontak, '0')) {
+                    $rawKontak = '62' . substr($rawKontak, 1);
+                  } elseif (str_starts_with($rawKontak, '62')) {
+                    // sudah benar
+                  } elseif (str_starts_with($rawKontak, '8')) {
+                    $rawKontak = '62' . $rawKontak;
+                  }
+                }
 
-          @if(!empty($links))
-            <div class="socialgroup bookhere-socials">
-              <ul>
-                @foreach($links as $key => $url)
-                  <li>
-                    <a href="{{ $url }}" target="_blank">
-                      @switch($key)
-                        @case('facebook')  <i class="fab fa-facebook"></i>  @break
-                        @case('twitter')   <i class="fab fa-twitter"></i>   @break
-                        @case('instagram') <i class="fab fa-instagram"></i> @break
-                        @case('website')   <i class="fas fa-globe"></i>     @break
-                        @case('whatsapp')  <i class="fab fa-whatsapp"></i>  @break
-                      @endswitch
-                    </a>
-                  </li>
-                @endforeach
-              </ul>
+                // --- Build URL WhatsApp dengan prefilled text ---
+                $waUrl = $rawKontak ? ('https://wa.me/'.$rawKontak.'?text='.rawurlencode($waMessage)) : null;
+
+                // --- Normalisasi Instagram: handle / URL penuh sama-sama diterima ---
+                $ig = $pdw->instagram ?? null;
+                if (!empty($ig)) {
+                  $ig = trim(ltrim($ig, '@'));
+                  if (!preg_match('~^https?://~i', $ig)) {
+                    $ig = 'https://instagram.com/' . $ig;
+                  }
+                }
+              @endphp
+
+              @if($waUrl || $ig)
+                <div class="socialgroup bookhere-socials">
+                  <ul>
+                    @if($ig)
+                      <li>
+                        <a href="{{ $ig }}" target="_blank" rel="noopener">
+                          <i class="fab fa-instagram"></i>
+                        </a>
+                      </li>
+                    @endif
+                    @if($waUrl)
+                      <li>
+                        <a href="{{ $waUrl }}" target="_blank" rel="noopener">
+                          <i class="fab fa-whatsapp"></i>
+                        </a>
+                      </li>
+                    @endif
+                  </ul>
+                </div>
+              @endif
             </div>
-          @endif
-        </div>
 
-          {{-- Peta (isi sesuai komponenmu). Kalau belum ada lat/lng di tabel, kirim alamat saja / biarkan default --}}
-          <x-package-map :address="$paket->lokasi" />
-          {{-- atau jika komponenmu butuh lat/lng: :lat="$paket->lat" :lng="$paket->lng" --}}
+
+        <x-package-map
+          :lat="$paket->map_lat"
+          :lng="$paket->map_lng"
+          :address="$paket->map_address"
+          height="320"
+          zoom="15"
+          class="mb-3"
+          :showLink="true"
+        />
+
+
 
         {{-- More Package --}}
         <x-more-packages
@@ -156,5 +193,152 @@
 @endsection
 
 @section('footer')
-  <x-footer></x-footer>
+  <footer id="colophon" class="site-footer footer-primary">
+        <div class="top-footer">
+            <div class="container">
+                <div class="upper-footer">
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-6">
+                            <aside class="widget widget_text">
+                                <div class="footer-logo">
+                                    <a href="{{ url('/') }}"><img src="{{ asset('assets/images/site-logo.png') }}" alt=""></a>
+                                </div>
+                                <div class="textwidget widget-text">
+                                    Kantor Dinas Kebudayaan dan Pariwisata Bintan
+                                </div>
+                            </aside>
+                        </div>
+
+                        
+                    
+                        <div class="col-lg-3 col-sm-6">
+                            <aside class="widget widget_latest_post widget-post-thumb">
+                                <h3 class="widget-title">RECENT POST</h3>
+                                <ul>
+                                    <li>
+                                        <figure class="post-thumb">
+                                            <a href="#"><img src="{{ asset('assets/images/bintantourism.jpg') }}" alt=""></a>
+                                        </figure>
+                                        <div class="post-content">
+                                            <h6><a href="#">BEST JOURNEY TO PEACEFUL PLACES</a></h6>
+                                            <div class="entry-meta">
+                                                <span class="posted-on"><a href="#">February 17, 2022</a></span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <figure class="post-thumb">
+                                            <a href="#"><img src="{{ asset('assets/images/bintantourism8.jpg') }}" alt=""></a>
+                                        </figure>
+                                        <div class="post-content">
+                                            <h6><a href="#">TRAVEL WITH FRIENDS IS BEST</a></h6>
+                                            <div class="entry-meta">
+                                                <span class="posted-on"><a href="#">February 17, 2022</a></span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </aside>
+                        </div>
+
+                        <div class="col-lg-3 col-sm-6">
+                            <aside class="widget widget_text">
+                                <h3 class="widget-title">CONTACT US</h3>
+                                <div class="textwidget widget-text">
+                                    <p>Feel free to contact and<br/>reach us !!</p>
+                                    <ul>
+                                        <li>
+                                            <a href="tel:+01988256203"><i class="icon icon-phone1"></i> (+62) 770 692-505</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://bintantourism.com/"><i class="fas fa-globe"></i> Bintan Tourism</a>
+                                        </li>
+                                        <li>
+                                            <i class="icon icon-map-marker1"></i> Jl. Trikora Km.36, Teluk Bakau, Kecamatan Gunung , Kabupaten Bintan, Kepulauan Riau 29151
+                                        </li>
+                                    </ul>
+                                </div>
+                            </aside>
+                        </div>
+
+                        <div class="col-lg-3 col-sm-6">
+                            <aside class="widget">
+                                <h3 class="widget-title">Gallery</h3>
+                                @php
+                                $images = [];
+                                for ($i = 1; $i <= 8; $i++) {
+                                    $path = "assets/images/bintantourism{$i}.jpg";
+                                    if (file_exists(public_path($path))) $images[] = $path;
+                                }
+                                @endphp
+
+                                <div class="gallery gallery-colum-3">
+                                @foreach($images as $idx => $img)
+                                    <figure class="gallery-item">
+                                    <a href="{{ asset($img) }}" data-fancybox="gallery-1">
+                                        <img src="{{ asset($img) }}" alt="Bintan Tourism {{ $idx+1 }}" loading="lazy"
+                                            onerror="this.onerror=null;this.src='{{ asset('assets/images/default.png') }}'">
+                                    </a>
+                                    </figure>
+                                @endforeach
+                                </div>
+                                {{-- <div class="gallery gallery-colum-3">
+                                    @for ($i = 21; $i <= 26; $i++)
+                                        <figure class="gallery-item">
+                                            <a href="{{ asset("assets/images/img$i.jpg") }}" data-fancybox="gallery-1">
+                                                <img src="{{ asset("assets/images/img$i.jpg") }}" alt="">
+                                            </a>
+                                        </figure>
+                                    @endfor
+                                </div> --}}
+                            </aside>
+                        </div>
+                        
+                    </div>
+
+                    
+                </div>
+                
+
+                <div class="lower-footer">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6">
+                            <div class="footer-newsletter">
+                                <p>Subscribe our newsletter for more update & news !!</p>
+                                <form class="newsletter">
+                                    <input type="email" name="email" placeholder="Enter Your Email">
+                                    <button type="submit" class="outline-btn outline-btn-white">Subscribe</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 text-right">
+                            <div class="social-icon">
+                                <ul>
+                                    <li><a href="https://www.facebook.com/disbudparbintan?_rdc=2&_rdr#" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
+                                    <li><a href="https://x.com/disbudparbintan"  target="_blank"><i class="fab fa-twitter"></i></a></li>
+                                    <li><a href="https://www.youtube.com/channel/UCJIYZxQ_PtFe2-Ck77qXZDg"  target="_blank"><i class="fab fa-youtube"></i></a></li>
+                                    <li><a href="https://www.instagram.com/bintantourism/" target="_blank"><i class="fab fa-instagram"></i></a></li>
+                                    {{-- <li><a href="https://www.linkedin.com/"  target="_blank"><i class="fab fa-linkedin"></i></a></li> --}}
+                                </ul>
+                            </div>
+                            <div class="footer-menu">
+                                <ul>
+                                    <li><a href="#">Privacy Policy</a></li>
+                                    <li><a href="#">Term & Condition</a></li>
+                                    <li><a href="#">FAQ</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="bottom-footer">
+            <div class="container">
+                <div class="copy-right text-center">Copyright &copy; 2025 Bintan Tourism. All rights reserved.</div>
+            </div>
+        </div>
+    </footer>
 @endsection

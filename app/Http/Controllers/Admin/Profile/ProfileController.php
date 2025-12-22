@@ -17,24 +17,61 @@ class ProfileController extends Controller
         $this->middleware('auth'); // pastikan login
     }
 
-    /**
-     * Tampilkan form edit profil Pokdarwis milik user yang login.
-     */
+    //New public function edit Admin + Pokdarwis
     public function edit(Request $request)
-    {
-        $userId = Auth::id();
+{
+    $user   = Auth::user();
+    $userId = $user->id;
 
-        // Ambil pokdarwis milik user; kalau belum ada, siapkan instance kosong (opsional)
-        $pokdarwis = Pokdarwis::firstOrCreate(
-            ['user_id' => $userId],
-            [
-                'name_pokdarwis' => Auth::user()->name ?? 'My Pokdarwis',
-                // 'slug'           => Str::slug(Auth::user()->name ?? 'my-pokdarwis-'.uniqid()),
-            ]
-        );
+    // 1) Jika bukan role 'pokdarwis', jangan auto-create record
+    if ($user->role !== 'pokdarwis') {
+        // arahkan ke dashboard admin atau tampilkan info yang sesuai
+        return redirect()
+            ->route('admin.settings.users.superadmin.index') // ganti route ini dengan punyamu
+            ->with('warning', 'Admin tidak memiliki profil Pokdarwis.');
+}
 
-        return view('admin.profile.edit', compact('pokdarwis'));
+    // 2) Ambil record jika ada
+    $pokdarwis = Pokdarwis::where('user_id', $userId)->first();
+
+    // 3) Jika belum ada, buat + generate slug unik
+    if (!$pokdarwis) {
+        $base = Str::slug($user->name ?: 'my-pokdarwis');
+        $slug = $base;
+        $i = 1;
+        while (Pokdarwis::where('slug', $slug)->exists()) {
+            $slug = $base.'-'.$i++;
+        }
+
+        $pokdarwis = Pokdarwis::create([
+            'user_id'         => $userId,
+            'name_pokdarwis'  => $user->name ?? 'My Pokdarwis',
+            'slug'            => $slug,
+        ]);
     }
+
+    return view('admin.profile.edit', compact('pokdarwis'));
+}
+
+
+    /**
+     * Tampilkan form edit profil Pokdarwis milik user yang login. /Before Edit untuk Admin
+     */
+    // public function edit(Request $request)
+    // {
+    //     $userId = Auth::id();
+
+    //     // Ambil pokdarwis milik user; kalau belum ada, siapkan instance kosong (opsional)
+    //     $pokdarwis = Pokdarwis::firstOrCreate(
+    //         ['user_id' => $userId],
+    //         [
+    //             'name_pokdarwis' => Auth::user()->name ?? 'My Pokdarwis',
+    //             // 'slug'           => Str::slug(Auth::user()->name ?? 'my-pokdarwis-'.uniqid()),
+    //         ]
+    //     );
+
+    //     return view('admin.profile.edit', compact('pokdarwis'));
+    // }
 
     /**
      * Update profil Pokdarwis milik user yang login.
@@ -70,14 +107,36 @@ class ProfileController extends Controller
             // 'website'    => ['nullable','url','max:255'],
 
             // Avatar image
-            'img'         => ['nullable','image','mimes:jpg,jpeg,png,webp','max:2048'],
+            'img'         => ['nullable','image','mimes:jpg,jpeg,png,webp','max:5120'],
             // Jika izinkan ubah slug manual (opsional)
             'slug'        => ['nullable','string','max:190','unique:pokdarwis,slug,'.$pokdarwis->id],
             'cover_img'          => ['nullable','image','mimes:jpg,jpeg,png,webp','max:5120'],
             'content_img'        => ['nullable','image','mimes:jpg,jpeg,png,webp','max:5120'],
             'content_video'      => ['nullable','url','max:1024'],           // URL (YouTube/Vimeo)
             'content_video_file' => ['nullable','mimetypes:video/mp4,video/webm,video/quicktime','max:51200'], // 50MB
-        ]);
+
+            // ===== Lokasi & peta (INI YANG BELUM ADA) =====
+            'alamat_maps' => ['nullable','string','max:1000'],
+            'lat'         => ['nullable','numeric','between:-90,90'],
+            'lng'         => ['nullable','numeric','between:-180,180'],
+         ]);
+
+         // ===== Normalisasi angka desimal (jaga-jaga pakai koma) =====
+    foreach (['lat','lng'] as $k) {
+        if (array_key_exists($k, $validated) && $validated[$k] !== null && $validated[$k] !== '') {
+            $validated[$k] = (float) str_replace(',', '.', $validated[$k]);
+        } else {
+            $validated[$k] = null;
+        }
+    }
+
+    // ===== Auto-parse koordinat dari tautan Google jika lat/lng kosong =====
+    if ((!$validated['lat'] || !$validated['lng']) && !empty($validated['alamat_maps'])) {
+        [$autoLat, $autoLng] = $this->extractLatLngFromGoogleUrl($validated['alamat_maps']);
+        $validated['lat'] = $validated['lat'] ?? $autoLat;
+        $validated['lng'] = $validated['lng'] ?? $autoLng;
+    }
+    
 
         // Handle upload foto profil (public storage)
         if ($request->hasFile('img')) {
@@ -92,15 +151,15 @@ class ProfileController extends Controller
         }
 
         // Jika slug kosong, auto-generate dari name_pokdarwis
-        // if (empty($validated['slug']) && !empty($validated['name_pokdarwis'])) {
-        //     $base = Str::slug($validated['name_pokdarwis']);
-        //     $slug = $base;
-        //     $i    = 1;
-        //     while (Pokdarwis::where('slug', $slug)->where('id','!=',$pokdarwis->id)->exists()) {
-        //         $slug = $base.'-'.$i++;
-        //     }
-        //     $validated['slug'] = $slug;
-        // }
+        if (empty($validated['slug']) && !empty($validated['name_pokdarwis'])) {
+    $base = Str::slug($validated['name_pokdarwis']);
+    $slug = $base;
+    $i = 1;
+    while (Pokdarwis::where('slug', $slug)->where('id','!=',$pokdarwis->id)->exists()) {
+        $slug = $base.'-'.$i++;
+    }
+    $validated['slug'] = $slug;
+}
 
         if ($request->hasFile('cover_img')) {
             if ($pokdarwis->cover_img) {

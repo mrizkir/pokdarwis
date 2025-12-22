@@ -51,7 +51,7 @@
                             <i aria-hidden="true" class="icon icon-phone-call2"></i>
                             <div class="header-contact-details">
                                 <span class="contact-label">For Further Inquires :</span>
-                                <h5 class="header-contact-no">+01 (977) 2599 12</h5>
+                                <h5 class="header-contact-no">(+62) 770 692-505</h5>
                             </div>
                         </a>
                     </div>
@@ -76,31 +76,7 @@
             </div>
         </div>
 
-        <div class="bottom-header">
-            <div class="container">
-                <div class="bottom-header-inner d-flex justify-content-between align-items-center">
-                    <div class="header-social social-icon">
-                        <ul>
-                            <li><a href="https://www.facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
-                            <li><a href="https://www.twitter.com"  target="_blank"><i class="fab fa-twitter"></i></a></li>
-                            <li><a href="https://www.youtube.com"  target="_blank"><i class="fab fa-youtube"></i></a></li>
-                        </ul>
-                    </div>
-
-                    {{-- Navigation Bar --}}
-                    <x-navbar active="gallery">
-
-                    </x-navbar>
-
-                    <div class="bottom-header-inner d-flex justify-content-between align-items-center">
-                        <div class="header-btn">
-                            <a href="{{ url('/login') }}"class="round-btn" style="all:unset; color:white; cursor:pointer; display:inline-block;">LOG IN</a>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
+        <x-header-fix></x-header-fix>
 
         <div class="mobile-menu-container"></div>
     </header>
@@ -177,7 +153,7 @@
                                     <p>Feel free to contact and<br/>reach us !!</p>
                                     <ul>
                                         <li>
-                                            <a href="tel:+01988256203"><i class="icon icon-phone1"></i> +01(988) 256 203</a>
+                                            <a href="tel:+01988256203"><i class="icon icon-phone1"></i> (+62) 770 692-505</a>
                                         </li>
                                         <li>
                                             <a href="https://bintantourism.com/"><i class="fas fa-globe"></i> Bintan Tourism</a>

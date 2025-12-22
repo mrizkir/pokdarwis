@@ -191,7 +191,7 @@
                                     <p>Feel free to contact and<br/>reach us !!</p>
                                     <ul>
                                         <li>
-                                            <a href="tel:+01988256203"><i class="icon icon-phone1"></i> +01(988) 256 203</a>
+                                            <a href="tel:+01988256203"><i class="icon icon-phone1"></i> (+62) 770 692-505</a>
                                         </li>
                                         <li>
                                             <a href="https://bintantourism.com/"><i class="fas fa-globe"></i> Bintan Tourism</a>

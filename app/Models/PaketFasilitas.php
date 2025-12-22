@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class PaketFasilitas extends Model
 {
     protected $table = 'paket_fasilitas';
-    protected $fillable = ['paket_wisata_id','nama_item','tipe','sort_order'];
+
+    protected $guarded = [];
 
     public function paket()
     {

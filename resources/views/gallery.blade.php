@@ -2,7 +2,7 @@
 
 @section('banner')
   <div class="inner-banner-wrap">
-    <div class="inner-baner-container" style="background-image:url('{{ asset('assets/images/guruntelagabiru.jpg') }}');">
+    <div class="inner-baner-container" style="background-image:url('{{ asset('assets/images/bintantourism6.jpg') }}');">
       <div class="container">
         <div class="inner-banner-content text-center text-white">
           <h1 class="page-title">Gallery</h1>

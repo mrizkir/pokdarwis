@@ -354,6 +354,8 @@ img {
 /*--------------------------------------------------------------
 # Heading
 --------------------------------------------------------------*/
+
+
 h1, h2, h3, h4, h5, h6 {
   color: #223645;
   font-family: "Montserrat", sans-serif;
@@ -2636,7 +2638,8 @@ button.round-btn:active {
   margin-right: 10px;
 }
 .mobile-menu-container .slicknav_menu .slicknav_menutxt {
-  color: #FFF;
+  color: #616161 !important;        /* ganti ke warna gelap */
+  font-weight: 600;
   text-shadow: none;
   font-weight: normal;
   font-size: 16px;
@@ -2785,7 +2788,7 @@ button.round-btn:active {
   display: none;
 }
 .slicknav_btn .slicknav_icon span {
-  background-color: #FFF;
+  background-color: #464646;
   box-shadow: none;
   display: none;
   position: absolute;
@@ -2804,7 +2807,7 @@ button.round-btn:active {
   display: block;
 }
 .slicknav_btn .slicknav_icon span:first-child:before, .slicknav_btn .slicknav_icon span:first-child:after {
-  background-color: #FFF;
+  background-color: #4a4a4a;
   content: "";
   position: absolute;
   width: 100%;
@@ -2995,6 +2998,14 @@ button.round-btn:active {
     line-height: 30px;
     font-size: 11px;
   }
+}
+
+.title-outline{
+  color: #223645; /* warna isi teks */
+  /* -webkit-text-stroke: 2px #000; */
+   /* outline */
+  /* responsive tipis-tebal opsional:
+     -webkit-text-stroke: clamp(1px, .25vw, 3px) #000; */
 }
 
 /*****************************
